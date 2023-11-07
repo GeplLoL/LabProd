@@ -1,0 +1,15 @@
+C:\Users\opilane\source\repos\LabProd\bin\Debug\net6.0-windows\LabProd.exe
+C:\Users\opilane\source\repos\LabProd\bin\Debug\net6.0-windows\LabProd.deps.json
+C:\Users\opilane\source\repos\LabProd\bin\Debug\net6.0-windows\LabProd.runtimeconfig.json
+C:\Users\opilane\source\repos\LabProd\bin\Debug\net6.0-windows\LabProd.dll
+C:\Users\opilane\source\repos\LabProd\bin\Debug\net6.0-windows\LabProd.pdb
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.csproj.AssemblyReference.cache
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.AssemblyInfoInputs.cache
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.AssemblyInfo.cs
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.csproj.CoreCompileInputs.cache
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.dll
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\refint\LabProd.dll
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.pdb
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\LabProd.genruntimeconfig.cache
+C:\Users\opilane\source\repos\LabProd\obj\Debug\net6.0-windows\ref\LabProd.dll
