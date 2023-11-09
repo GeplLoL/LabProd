@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace LabProd
 {
     public partial class Form1 : Form
@@ -45,6 +47,7 @@ namespace LabProd
             itemPen.DropDownItems.Add(itemStyle);
             itemPen.DropDownItems.Add(itemColor);
             ToolStripMenuItem itemSolid = new ToolStripMenuItem("Solid");
+            ((ToolStripMenuItem)itemSolid).Checked = true;
             ToolStripMenuItem itemDot = new ToolStripMenuItem("Dot");
             ToolStripMenuItem itemDashDotDot = new ToolStripMenuItem("DashDotDot");
             itemStyle.DropDownItems.Add(itemSolid);
@@ -56,31 +59,41 @@ namespace LabProd
             itemHelp.DropDownItems.Add(itemAbout);
 
 
-            ToolStrip toolStrip = new ToolStrip();
-            toolStrip.Orientation = Orientation.Vertical;
-            itemNew = new ToolStripMenuItem("New");
-            itemOpen = new ToolStripMenuItem("Open");
-            itemSave = new ToolStripMenuItem("Save");
-            itemStyle = new ToolStripMenuItem("Style");
-            itemExit = new ToolStripMenuItem("Exit");
 
-            toolStrip.Items.Add(itemNew);
-            toolStrip.Items.Add(itemOpen);
-            toolStrip.Items.Add(itemSave);
-            toolStrip.Items.Add(itemStyle);
-            toolStrip.Items.Add(itemExit);
+            ToolStrip toolStrip = new ToolStrip();
+            toolStrip.Dock = DockStyle.Left;
+            toolStrip.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
+
+            ToolStripMenuItem itemNew1 = new ToolStripMenuItem();
+            itemNew1.Image = Bitmap.FromFile("../../../img/New1.png");
+            itemNew1.ImageScaling = ToolStripItemImageScaling.None;
+            ToolStripMenuItem itemOpen1 = new ToolStripMenuItem();
+            itemOpen1.Image = Bitmap.FromFile("../../../img/Open1.png");
+            itemOpen1.ImageScaling = ToolStripItemImageScaling.None;
+            ToolStripMenuItem itemSave1 = new ToolStripMenuItem();
+            itemSave1.Image = Image.FromFile("../../../img/Save1.png");
+            itemSave1.ImageScaling = ToolStripItemImageScaling.None;
+            ToolStripMenuItem itemStyle1 = new ToolStripMenuItem();
+            itemStyle1.Image = Image.FromFile("../../../img/Style1.png");
+            itemStyle1.ImageScaling = ToolStripItemImageScaling.None;
+            ToolStripMenuItem itemExit1 = new ToolStripMenuItem();
+            itemExit1.Image = Image.FromFile("../../../img/Exist1.png");
+            itemExit1.ImageScaling = ToolStripItemImageScaling.None;
+
+
+            toolStrip.Items.Add(itemNew1);
+            toolStrip.Items.Add(itemOpen1);
+            toolStrip.Items.Add(itemSave1);
+            toolStrip.Items.Add(itemStyle1);
+            toolStrip.Items.Add(itemExit1);
 
             Controls.Add(toolStrip);
 
-
-
-
-
-
-
-
             Controls.Add(MainMenu);
-
+            PictureBox pictureBox1 = new PictureBox();
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.ClientSize = new Size(100, 200);
+            Controls.Add(pictureBox1);
             InitializeComponent();
         }
 
