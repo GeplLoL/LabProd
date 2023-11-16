@@ -1,3 +1,5 @@
+using System.Drawing.Configuration;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
@@ -5,10 +7,19 @@ namespace LabProd
 {
     public partial class Form1 : Form
     {
-        public event EventHandler NewPictureBoxCreated;
         private PictureBox pictureBox;
+        bool drawing;
+        int historyCounter;
+        GraphicsPath currentPath;
+        Point oldLocation;
+        Pen currentPen;
+        Color historyColor;
+        Label label_XY;
+        TrackBar trackBarPen;
+        List<Image> History;
         public Form1()
         {
+
             MenuStrip MainMenu = new MenuStrip();
             this.MainMenuStrip = MainMenu;
             ToolStripMenuItem itemFile = new ToolStripMenuItem("File");
@@ -95,7 +106,22 @@ namespace LabProd
 
             Controls.Add(MainMenu);
 
+            trackBarPen = new TrackBar();
+            drawing = false;
+            currentPen = new Pen(Color.Black);
+            currentPen.Width = trackBarPen.Value;
+            trackBarPen.Size = new Size(400, 400);
+            trackBarPen.Location = new Point(150, 700);
+            trackBarPen.ValueChanged += TrackBarPen_ValueChanged;
+            this.Controls.Add(trackBarPen);
+            History = new List<Image>();
             InitializeComponent();
+
+        }
+
+        private void TrackBarPen_ValueChanged(object? sender, EventArgs e)
+        {
+            currentPen.Width = trackBarPen.Value;
         }
 
         private void AboutKeysKlick(object? sender, EventArgs e)
@@ -120,6 +146,9 @@ namespace LabProd
 
         private void SaveKeysKlick(object? sender, EventArgs e)
         {
+            InitializeComponent();
+            drawing = false;
+            currentPen = new Pen(Color.Black);
             SaveFileDialog SaveDlg = new SaveFileDialog();
             SaveDlg.Filter = "JPEG Image|*.jpg|Bitmap Image|*.bmp|GIF Image|*.gif|PNG Image|*.png";
             SaveDlg.Title = "Save an Image File";
@@ -165,29 +194,24 @@ namespace LabProd
         private void NewKeysKlick(object sender, EventArgs e)
         {
             Bitmap pic = new Bitmap(750, 500);
-            // Создаем новый объект PictureBox
             pictureBox = new PictureBox();
 
-            // Устанавливаем свойства PictureBox
             pictureBox.Name = "pictureBox";
             pictureBox.Size = new Size(600, 600);
             pictureBox.Location = new Point(150, 50);
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
 
-            // Создаем белый холст (Bitmap) и устанавливаем его в качестве изображения для PictureBox
             Bitmap canvas = new Bitmap(pictureBox.Width, pictureBox.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.Clear(Color.White); // Заполняем холст белым цветом
+                g.Clear(Color.White);
             }
             pictureBox.Image = canvas;
 
-            // Подписываемся на события мыши
             pictureBox.MouseDown += PictureBox_MouseDown;
             pictureBox.MouseMove += PictureBox_MouseMove;
             pictureBox.MouseUp += PictureBox_MouseUp;
 
-            // Добавляем PictureBox на форму
             this.Controls.Add(pictureBox);
         }
 
@@ -198,13 +222,66 @@ namespace LabProd
                 MessageBox.Show("Сначала создайте нвоый файл!");
                 return;
             }
+
+            if (e.Button == MouseButtons.Left)
+            {
+                drawing = true;
+                oldLocation = e.Location;
+                currentPath = new GraphicsPath();
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                historyColor = currentPen.Color;
+                currentPen.Color = pictureBox.BackColor;
+            }
         }
 
         private void PictureBox_MouseMove(object sender, MouseEventArgs e)
         {
+            label_XY = new Label();
+            label_XY.Text = "0, 0";
+            label_XY.Location = new Point(10, 10);
+            Controls.Add(label_XY);
+            label_XY.Text = e.X.ToString() + ", " + e.Y.ToString();
+            if (drawing)
+            {
+                Graphics g = Graphics.FromImage(pictureBox.Image);
+
+                if (currentPen == null)
+                {
+                    currentPen = new Pen(Color.Black);
+                }
+
+                if (currentPath == null)
+                {
+                    currentPath = new GraphicsPath();
+                }
+
+                if (e.Button == MouseButtons.Left)
+                {
+                    currentPath.AddLine(oldLocation, e.Location);
+                    g.DrawPath(currentPen, currentPath);
+                    oldLocation = e.Location;
+                }
+
+                g.Dispose();
+                pictureBox.Invalidate();
+            }
         }
         private void PictureBox_MouseUp(object sender, MouseEventArgs e)
         {
+            drawing = false;
+
+            try
+            {
+                currentPath.Dispose();
+            }
+            catch { }
+
+            if (e.Button == MouseButtons.Right)
+            {
+                currentPen.Color = historyColor;
+            }
         }
     }
 }
