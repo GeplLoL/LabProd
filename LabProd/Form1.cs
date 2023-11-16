@@ -1,9 +1,12 @@
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace LabProd
 {
     public partial class Form1 : Form
     {
+        public event EventHandler NewPictureBoxCreated;
+        private PictureBox pictureBox;
         public Form1()
         {
             MenuStrip MainMenu = new MenuStrip();
@@ -64,7 +67,8 @@ namespace LabProd
             toolStrip.Dock = DockStyle.Left;
             toolStrip.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
 
-            ToolStripMenuItem itemNew1 = new ToolStripMenuItem();
+            ToolStripMenuItem itemNew1 = new ToolStripMenuItem(null,null,new System.EventHandler(NewKeysKlick));
+            itemNew1.ShortcutKeys = Keys.Control | Keys.N;
             itemNew1.Image = Bitmap.FromFile("../../../img/New1.png");
             itemNew1.ImageScaling = ToolStripItemImageScaling.None;
             ToolStripMenuItem itemOpen1 = new ToolStripMenuItem();
@@ -90,10 +94,7 @@ namespace LabProd
             Controls.Add(toolStrip);
 
             Controls.Add(MainMenu);
-            PictureBox pictureBox1 = new PictureBox();
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.ClientSize = new Size(100, 200);
-            Controls.Add(pictureBox1);
+
             InitializeComponent();
         }
 
@@ -114,12 +115,46 @@ namespace LabProd
 
         private void ExitKeysKlick(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Application.Exit();
         }
 
         private void SaveKeysKlick(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog SaveDlg = new SaveFileDialog();
+            SaveDlg.Filter = "JPEG Image|*.jpg|Bitmap Image|*.bmp|GIF Image|*.gif|PNG Image|*.png";
+            SaveDlg.Title = "Save an Image File";
+            SaveDlg.FilterIndex = 4;
+            SaveDlg.ShowDialog();
+            if (SaveDlg.FileName != "")
+            {
+                System.IO.FileStream fs = (System.IO.FileStream)SaveDlg.OpenFile();
+                switch (SaveDlg.FilterIndex)
+                {
+                    case 1:
+                        this.pictureBox.Image.Save(fs, ImageFormat.Jpeg);
+                        break;
+                    case 2:
+                        this.pictureBox.Image.Save(fs, ImageFormat.Bmp);
+                        break;
+                    case 3:
+                        this.pictureBox.Image.Save(fs, ImageFormat.Gif);
+                        break;
+                    case 4:
+                        this.pictureBox.Image.Save(fs, ImageFormat.Png);
+                        break;
+                }
+                fs.Close();
+            }
+            if (pictureBox.Image != null)
+            {
+                var result = MessageBox.Show("Сохранить текущее изображение перед созданием нового рисунка?", "Предупреждение", MessageBoxButtons.YesNoCancel);
+                switch (result)
+                {
+                    case DialogResult.No: break;
+                    case DialogResult.Yes: SaveKeysKlick(sender, e); break;
+                    case DialogResult.Cancel: return;
+                }
+            }
         }
 
         private void OpenKeysKlick(object? sender, EventArgs e)
@@ -127,9 +162,49 @@ namespace LabProd
             throw new NotImplementedException();
         }
 
-        private void NewKeysKlick(object? sender, EventArgs e)
+        private void NewKeysKlick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Bitmap pic = new Bitmap(750, 500);
+            // Создаем новый объект PictureBox
+            pictureBox = new PictureBox();
+
+            // Устанавливаем свойства PictureBox
+            pictureBox.Name = "pictureBox";
+            pictureBox.Size = new Size(600, 600);
+            pictureBox.Location = new Point(150, 50);
+            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+
+            // Создаем белый холст (Bitmap) и устанавливаем его в качестве изображения для PictureBox
+            Bitmap canvas = new Bitmap(pictureBox.Width, pictureBox.Height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.Clear(Color.White); // Заполняем холст белым цветом
+            }
+            pictureBox.Image = canvas;
+
+            // Подписываемся на события мыши
+            pictureBox.MouseDown += PictureBox_MouseDown;
+            pictureBox.MouseMove += PictureBox_MouseMove;
+            pictureBox.MouseUp += PictureBox_MouseUp;
+
+            // Добавляем PictureBox на форму
+            this.Controls.Add(pictureBox);
+        }
+
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (pictureBox.Image == null)
+            {
+                MessageBox.Show("Сначала создайте нвоый файл!");
+                return;
+            }
+        }
+
+        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+        }
+        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
         }
     }
 }
