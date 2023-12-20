@@ -105,6 +105,13 @@ namespace LabProd
             Controls.Add(toolStrip);
 
             Controls.Add(MainMenu);
+            Bitmap pic = new Bitmap(750, 500);
+            pictureBox = new PictureBox();
+
+            pictureBox.Name = "pictureBox";
+            pictureBox.Size = new Size(600, 600);
+            pictureBox.Location = new Point(150, 50);
+            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
 
             trackBarPen = new TrackBar();
             drawing = false;
@@ -145,7 +152,7 @@ namespace LabProd
         }
 
         private void SaveKeysKlick(object? sender, EventArgs e)
-        {
+        { 
             InitializeComponent();
             drawing = false;
             currentPen = new Pen(Color.Black);
@@ -174,7 +181,7 @@ namespace LabProd
                 }
                 fs.Close();
             }
-            if (pictureBox.Image != null)
+            if (pictureBox.Image == null)
             {
                 var result = MessageBox.Show("Сохранить текущее изображение перед созданием нового рисунка?", "Предупреждение", MessageBoxButtons.YesNoCancel);
                 switch (result)
@@ -188,19 +195,30 @@ namespace LabProd
 
         private void OpenKeysKlick(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (pictureBox?.Image != null)
+            {
+                var result = MessageBox.Show("salvestama see pilt", "Dangerous", MessageBoxButtons.YesNoCancel);
+
+                switch (result)
+                {
+                    case DialogResult.No: break;
+                    case DialogResult.Yes: SaveKeysKlick(sender, e); break;
+                    case DialogResult.Cancel: return;
+                }
+            }
+            OpenFileDialog OP = new OpenFileDialog();
+            OP.Filter = "JPEG Image|*.jpg|Bitmap Image|*.bmp|GIF Image|*.gif|PNG Image|*.png";
+            OP.Title = "Save an Image File";
+            OP.FilterIndex = 1;
+            if (OP.ShowDialog() != DialogResult.Cancel)
+            {
+                pictureBox.Load(OP.FileName);
+                pictureBox.AutoSize = true;
+            }
         }
 
         private void NewKeysKlick(object sender, EventArgs e)
         {
-            Bitmap pic = new Bitmap(750, 500);
-            pictureBox = new PictureBox();
-
-            pictureBox.Name = "pictureBox";
-            pictureBox.Size = new Size(600, 600);
-            pictureBox.Location = new Point(150, 50);
-            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-
             Bitmap canvas = new Bitmap(pictureBox.Width, pictureBox.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
@@ -219,7 +237,7 @@ namespace LabProd
         {
             if (pictureBox.Image == null)
             {
-                MessageBox.Show("Сначала создайте нвоый файл!");
+                MessageBox.Show("Create fail!");
                 return;
             }
 
